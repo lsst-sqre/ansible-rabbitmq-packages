@@ -1,0 +1,14 @@
+---
+# Install RabbitMQ packages on debian based distributions.
+
+- name: Add RabbitMQ apt key
+  apt_key: url=https://www.rabbitmq.com/rabbitmq-release-signing-key.asc state=present
+
+- name: Install apt-transport-https dependency.
+  apt: name=apt-transport-https update_cache=yes state=latest install_recommends=no
+
+- name: Install RabbitMQ repo
+  apt_repository: repo="deb https://www.rabbitmq.com/debian/ testing main" state=present
+
+- name: Install RabbitMQ package
+  apt: name=rabbitmq-server update_cache=yes state=latest install_recommends=no

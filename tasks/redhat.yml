@@ -1,0 +1,23 @@
+---
+# Install RabbitMQ packages on a redhat family distribution.
+
+- name: Add the RabbitMQ signing key.
+  rpm_key: state=present key=https://www.rabbitmq.com/rabbitmq-release-signing-key.asc
+
+- name: Install EPEL repository.
+  yum:
+    name: epel-release
+    state: present
+
+- name: Install RabbitMQ depedencies.
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - socat
+    - https://github.com/rabbitmq/erlang-rpm/releases/download/v19.2.3/erlang-19.2.3-1.el7.centos.x86_64.rpm
+
+- name: Install RabbitMQ.
+  yum:
+    name: https://www.rabbitmq.com/releases/rabbitmq-server/v3.6.6/rabbitmq-server-3.6.6-1.el7.noarch.rpm
+    state: present
