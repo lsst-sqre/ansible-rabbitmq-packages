@@ -1,0 +1,36 @@
+---
+# Basic configuration of the RabbitMQ service.
+
+- name: Set hostname.
+  hostname:
+    name: "{{ inventory_hostname }}"
+
+- name: Change max open file limit through pam limits.
+  pam_limits:
+    domain: rabbitmq
+    limit_type: hard
+    limit_item: nofile
+    value: 320000
+
+- name: Make /etc/systemd/system/rabbitmq-server.service.d directory.
+  file:
+    path: /etc/systemd/system/rabbitmq-server.service.d
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Change max open file limit through systemd configuration.
+  copy:
+    src: files/limits.conf
+    dest: /etc/systemd/system/rabbitmq-server.service.d/limits.conf
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Restart and enable RabbitMQ.
+  systemd:
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+    name: rabbitmq-server
